@@ -4,7 +4,11 @@
   "description": "Chrome based web video recorder.",
   "version": "1.0.0",
   "host_permissions": ["https://*/*"],
+  "content_scripts": [{
+    "matches": ["https://*/*"],
+    "js": ["content-scripts/content.js"]
+  }],
   "action": {
     "default_popup": "index.html"
   }
-}
+ }
