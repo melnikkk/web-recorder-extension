@@ -1,15 +1,14 @@
 import {defineConfig} from "vite";
 
-// https://vitejs.dev/config/
 export default defineConfig({
   build: {
     emptyOutDir: false,
     rollupOptions: {
       input: {
-        content: "src/content-scripts/content.ts"
+        content: "src/background/service-worker.ts"
       },
       output: {
-        entryFileNames: "content-scripts/content.js"
+        entryFileNames: "background/service-worker.js"
       }
     }
   }
