@@ -1,4 +1,4 @@
-import {defineConfig} from "vite";
+import { defineConfig } from 'vite';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -6,11 +6,11 @@ export default defineConfig({
     emptyOutDir: false,
     rollupOptions: {
       input: {
-        content: "src/content-scripts/content.ts"
+        content: 'src/content-scripts/content.ts',
       },
       output: {
-        entryFileNames: "content-scripts/content.js"
-      }
-    }
-  }
-})
+        entryFileNames: 'content-scripts/content.js',
+      },
+    },
+  },
+});
