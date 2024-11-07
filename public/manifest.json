@@ -8,6 +8,7 @@
     "matches": ["https://*/*"],
     "js": ["content-scripts/content.js"]
   }],
+  "permissions": ["activeTab"],
   "background": {
     "service_worker": "background/service-worker.js",
     "type": "module"

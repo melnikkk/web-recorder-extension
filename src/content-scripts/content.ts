@@ -1,1 +1,5 @@
-console.log('Hello from content script!')
+import { eventListener } from './eventListener';
+
+(() => {
+  eventListener();
+})();
