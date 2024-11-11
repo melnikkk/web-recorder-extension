@@ -3,17 +3,17 @@
   "name": "Web Recorder",
   "description": "Chrome based web video recorder.",
   "version": "1.0.0",
-  "host_permissions": ["https://*/*"],
-  "content_scripts": [{
-    "matches": ["https://*/*"],
-    "js": ["content-scripts/content.js"]
-  }],
-  "permissions": ["activeTab"],
+  "host_permissions": ["<all_urls>"],
+  "permissions": ["activeTab", "storage", "scripting", "tabCapture", "offscreen"],
   "background": {
     "service_worker": "background/service-worker.js",
     "type": "module"
   },
   "action": {
     "default_popup": "index.html"
-  }
+  },
+  "web_accessible_resources": [{
+    "resources": ["src/background/offscreen.html", "src/background/offscreen.ts"],
+    "matches": ["<all_urls>"]
+  }]
  }

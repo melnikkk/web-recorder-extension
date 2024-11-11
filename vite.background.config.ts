@@ -5,11 +5,10 @@ export default defineConfig({
     emptyOutDir: false,
     rollupOptions: {
       input: {
-        content: 'src/background/service-worker.ts',
+        'service-worker': 'src/background/service-worker.ts',
+        offscreen: 'src/background/offscreen.ts',
       },
-      output: {
-        entryFileNames: 'background/service-worker.js',
-      },
+      output: { entryFileNames: 'background/[name].js' },
     },
   },
 });

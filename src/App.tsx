@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
-import { getCurrentTab, sendContentMessage } from './utils';
-import { MessageType } from './constants';
+import { sendRuntimeMessage } from './utils';
+import { BackgroundMessageType } from './constants';
 import { AppWrapper, RecordButton, RecorderContent, RecorderStatus } from './styled';
 
 function App() {
@@ -9,9 +9,7 @@ function App() {
   const onRecordButtonClick = useCallback(async () => {
     setIsRecordingInProgress(!isRecordingInProgress);
 
-    const currentTab = await getCurrentTab();
-
-    await sendContentMessage({ type: MessageType.SAY_HI }, currentTab);
+    await sendRuntimeMessage({ type: BackgroundMessageType.INITIATE_RECORDING });
   }, [isRecordingInProgress]);
 
   return (
