@@ -1,4 +1,3 @@
-// TODO: move to separate module
 import { OffscreenMessageType } from '../constants';
 import { OffscreenMessage } from '../types';
 
