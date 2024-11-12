@@ -6,7 +6,6 @@ export default defineConfig({
     rollupOptions: {
       input: {
         'service-worker': 'src/background/service-worker.ts',
-        offscreen: 'src/background/offscreen.ts',
       },
       output: { entryFileNames: 'background/[name].js' },
     },

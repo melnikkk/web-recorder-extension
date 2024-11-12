@@ -9,7 +9,10 @@ function App() {
   const onRecordButtonClick = useCallback(async () => {
     setIsRecordingInProgress(!isRecordingInProgress);
 
-    await sendRuntimeMessage({ type: BackgroundMessageType.INITIATE_RECORDING });
+    await sendRuntimeMessage({
+      type: BackgroundMessageType.INITIATE_RECORDING,
+      contextType: chrome.runtime.ContextType.BACKGROUND,
+    });
   }, [isRecordingInProgress]);
 
   return (

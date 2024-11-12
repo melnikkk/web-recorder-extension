@@ -11,12 +11,14 @@ const onStartRecordingEventHandler = async () => {
 };
 
 const eventListener = async (message: OffscreenMessage) => {
-  switch (message.type) {
-    case OffscreenMessageType.START_RECORDING:
-      await onStartRecordingEventHandler();
-      break;
-    default:
-      throw new Error(`Offscreen: unrecognized message type ${message.type}.`);
+  if (message.contextType === chrome.runtime.ContextType.OFFSCREEN_DOCUMENT) {
+    switch (message.type) {
+      case OffscreenMessageType.START_RECORDING:
+        await onStartRecordingEventHandler();
+        break;
+      default:
+        throw new Error(`Offscreen: unrecognized message type ${message.type}.`);
+    }
   }
 };
 
