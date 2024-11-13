@@ -1,5 +1,6 @@
 import { OffscreenMessageType } from '../constants';
 import { OffscreenMessage } from '../types';
+import { setStateToLocalStorage } from '../utils.ts';
 
 const onStartRecordingEventHandler = async () => {
   await navigator.mediaDevices.getDisplayMedia({
@@ -8,6 +9,8 @@ const onStartRecordingEventHandler = async () => {
     // @ts-expect-error: not typed
     selfBrowserSurface: 'include',
   });
+
+  await setStateToLocalStorage({ isRecordingInProgress: true });
 };
 
 const eventListener = async (message: OffscreenMessage) => {

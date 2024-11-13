@@ -9,3 +9,7 @@ export interface Message<T> {
 export type BackgroundMessage = Message<BackgroundMessageType>;
 
 export type OffscreenMessage = Message<OffscreenMessageType>;
+
+export interface LocalStorageState {
+  isRecordingInProgress: boolean;
+}
