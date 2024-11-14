@@ -1,6 +1,6 @@
 import { BackgroundMessage } from '../types';
 import { BackgroundMessageType, OffscreenMessageType } from '../constants';
-import { sendRuntimeMessage } from '../utils';
+import { sendRuntimeMessage, setStateToLocalStorage } from '../utils';
 
 export const eventListener = async (
   message: BackgroundMessage,
@@ -29,6 +29,12 @@ export const eventListener = async (
           type: OffscreenMessageType.START_RECORDING,
           contextType: chrome.runtime.ContextType.OFFSCREEN_DOCUMENT,
         });
+        await setStateToLocalStorage({ isRecordingInProgress: true });
+
+        break;
+      }
+      case BackgroundMessageType.STOP_RECORDING: {
+        await setStateToLocalStorage({ isRecordingInProgress: false });
 
         break;
       }

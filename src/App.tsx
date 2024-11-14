@@ -6,13 +6,30 @@ import { AppWrapper, RecordButton, RecorderContent, RecorderStatus } from './sty
 export default function App() {
   const [isRecordingInProgress, setIsRecordingInProgress] = useState(false);
 
-  const onRecordButtonClick = useCallback(async () => {
-    setIsRecordingInProgress(!isRecordingInProgress);
+  const startRecording = useCallback(async () => {
+    setIsRecordingInProgress(true);
 
     await sendRuntimeMessage({
       type: BackgroundMessageType.INITIATE_RECORDING,
       contextType: chrome.runtime.ContextType.BACKGROUND,
     });
+  }, []);
+
+  const stopRecording = useCallback(async () => {
+    setIsRecordingInProgress(false);
+
+    await sendRuntimeMessage({
+      type: BackgroundMessageType.STOP_RECORDING,
+      contextType: chrome.runtime.ContextType.BACKGROUND,
+    });
+  }, []);
+
+  const onRecordButtonClick = useCallback(async () => {
+    if (isRecordingInProgress) {
+      await stopRecording();
+    } else {
+      await startRecording();
+    }
   }, [isRecordingInProgress]);
 
   const initiateExtension = useCallback(async () => {
