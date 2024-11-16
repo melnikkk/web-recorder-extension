@@ -1,16 +1,23 @@
-import { OffscreenMessageType } from '../constants';
+import { BackgroundMessageType, OffscreenMessageType } from '../constants';
 import { OffscreenMessage } from '../types';
-import { setStateToLocalStorage } from '../utils.ts';
+import { sendRuntimeMessage } from '../utils.ts';
 
 const onStartRecordingEventHandler = async () => {
-  await navigator.mediaDevices.getDisplayMedia({
-    video: { frameRate: 60 },
-    audio: false,
-    // @ts-expect-error: not typed
-    selfBrowserSurface: 'include',
-  });
+  try {
+    await navigator.mediaDevices.getDisplayMedia({
+      video: { frameRate: 60 },
+      audio: false,
+      // @ts-expect-error: not typed
+      selfBrowserSurface: 'include',
+    });
+  } catch (error) {
+    console.error('Display media: permission denied.');
 
-  await setStateToLocalStorage({ isRecordingInProgress: true });
+    await sendRuntimeMessage({
+      type: BackgroundMessageType.STOP_RECORDING,
+      contextType: chrome.runtime.ContextType.BACKGROUND,
+    });
+  }
 };
 
 const eventListener = async (message: OffscreenMessage) => {
@@ -18,6 +25,7 @@ const eventListener = async (message: OffscreenMessage) => {
     switch (message.type) {
       case OffscreenMessageType.START_RECORDING:
         await onStartRecordingEventHandler();
+
         break;
       default:
         throw new Error(`Offscreen: unrecognized message type ${message.type}.`);
