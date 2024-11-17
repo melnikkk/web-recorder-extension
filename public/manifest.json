@@ -4,7 +4,7 @@
   "description": "Chrome based web video recorder.",
   "version": "1.0.0",
   "host_permissions": ["<all_urls>"],
-  "permissions": ["activeTab", "storage", "scripting", "tabCapture", "offscreen"],
+  "permissions": ["activeTab", "storage", "scripting", "tabCapture", "offscreen", "downloads"],
   "background": {
     "service_worker": "background/service-worker.js",
     "type": "module"
