@@ -11,7 +11,7 @@ export const eventListener = async (
     switch (message.type) {
       case BackgroundMessageType.INITIATE_RECORDING: {
         // TODO: setup correct vite builder
-        const offscreenDocumentUrl = '../src/offscreen.html';
+        const offscreenDocumentUrl = 'src/offscreen.html';
         const existingContexts = await chrome.runtime.getContexts({
           contextTypes: [chrome.runtime.ContextType.OFFSCREEN_DOCUMENT],
         });
@@ -29,12 +29,24 @@ export const eventListener = async (
           type: OffscreenMessageType.START_RECORDING,
           contextType: chrome.runtime.ContextType.OFFSCREEN_DOCUMENT,
         });
+
         await setStateToLocalStorage({ isRecordingInProgress: true });
 
         break;
       }
       case BackgroundMessageType.STOP_RECORDING: {
         await setStateToLocalStorage({ isRecordingInProgress: false });
+
+        break;
+      }
+      case BackgroundMessageType.CAPTURE_IS_READY: {
+        // TODO: provide generic solution
+        // @ts-ignore
+        const downloadUrl = message.data?.url;
+
+        if (downloadUrl) {
+          await chrome.downloads.download({ url: downloadUrl, saveAs: true });
+        }
 
         break;
       }
