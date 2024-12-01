@@ -44,6 +44,11 @@ const onStartRecordingEventHandler = async () => {
     recorder.onstop = onRecorderStop;
 
     recorder.start();
+
+    await sendRuntimeMessage({
+      type: BackgroundMessageType.RECORDING_IN_PROGRESS,
+      contextType: ContextType.BACKGROUND,
+    });
   } catch (error) {
     console.error(error);
 
