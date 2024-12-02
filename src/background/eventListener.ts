@@ -1,6 +1,11 @@
+import { v4 } from 'uuid';
 import { BackgroundMessage } from '../types';
 import { BackgroundMessageType, OffscreenMessageType } from '../constants';
-import { sendRuntimeMessage, setStateToLocalStorage } from '../utils';
+import {
+  getStateFromLocalStorage,
+  sendRuntimeMessage,
+  setStateToLocalStorage,
+} from '../utils';
 
 export const eventListener = async (
   message: BackgroundMessage,
@@ -35,7 +40,18 @@ export const eventListener = async (
         break;
       }
       case BackgroundMessageType.STOP_RECORDING: {
-        await setStateToLocalStorage({ isRecordingInProgress: false });
+        const state = await getStateFromLocalStorage();
+        const currentRecording = state.recording;
+        const isRecordingInProgress = state.isRecordingInProgress;
+
+        if (currentRecording && isRecordingInProgress) {
+          currentRecording.data.stopTime = Date.now();
+
+          await setStateToLocalStorage({
+            isRecordingInProgress: false,
+            recording: currentRecording,
+          });
+        }
 
         break;
       }
@@ -45,8 +61,29 @@ export const eventListener = async (
         const downloadUrl = message.data?.url;
 
         if (downloadUrl) {
+          const state = await getStateFromLocalStorage();
+          const currentRecording = state.recording;
+
+          if (currentRecording) {
+            currentRecording.url = downloadUrl;
+
+            await setStateToLocalStorage({ recording: currentRecording });
+          }
+
           await chrome.downloads.download({ url: downloadUrl, saveAs: true });
         }
+
+        break;
+      }
+      case BackgroundMessageType.RECORDING_IN_PROGRESS: {
+        await setStateToLocalStorage({
+          recording: {
+            id: v4(),
+            data: {
+              startTime: Date.now(),
+            },
+          },
+        });
 
         break;
       }
