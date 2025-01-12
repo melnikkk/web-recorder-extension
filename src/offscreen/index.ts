@@ -33,7 +33,7 @@ const onRecorderStop = async () => {
 const onStartRecordingEventHandler = async () => {
   try {
     mediaStream = await navigator.mediaDevices.getDisplayMedia({
-      video: { frameRate: 60 },
+      video: { width: { ideal: 1920, max: 1920 }, height: { ideal: 1080, max: 1080 } },
       audio: false,
       // @ts-expect-error: not typed
       selfBrowserSurface: 'include',
