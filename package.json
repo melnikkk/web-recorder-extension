@@ -1,12 +1,12 @@
 {
   "name": "web-recorder-extension",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build && npm run build:background",
-    "build:content-scripts": "vite build --config vite.content.config.ts",
+    "build": "tsc -b && vite build && npm run build:background && npm run build:content-script",
+    "build:content-script": "vite build --config vite.content.config.ts",
     "build:background": "vite build --config vite.background.config.ts",
     "lint": "eslint web-recorder-extension",
     "preview": "vite preview"

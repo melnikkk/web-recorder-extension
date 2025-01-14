@@ -3,6 +3,7 @@ export enum BackgroundMessageType {
   STOP_RECORDING = 'stop_recording',
   CAPTURE_IS_READY = 'capture_is_ready',
   RECORDING_IN_PROGRESS = 'recording_in_progress',
+  USER_ACTION_HAPPENED = 'user_action_happened',
 }
 
 export enum OffscreenMessageType {

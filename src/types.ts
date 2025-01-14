@@ -10,16 +10,24 @@ export type BackgroundMessage = Message<BackgroundMessageType>;
 
 export type OffscreenMessage = Message<OffscreenMessageType>;
 
-export interface Recording {
-  id: string;
-  url?: string;
-  data: {
-    startTime?: number;
-    stopTime?: number;
-  };
-}
-
 export interface LocalStorageState {
   isRecordingInProgress: boolean;
   recording?: Recording | null;
 }
+
+export interface Recording {
+  id: string;
+  url?: string;
+  startTime?: number;
+  stopTime?: number;
+  events: UserEvents;
+}
+
+export interface UserEvent {
+  id: string;
+  type: string;
+  coordinates: [number, number];
+  timestamp: number;
+}
+
+export type UserEvents = Array<UserEvent>;
