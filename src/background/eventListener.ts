@@ -1,5 +1,5 @@
 import { v4 } from 'uuid';
-import { BackgroundMessage } from '../types';
+import { BackgroundMessage, UserEvent } from '../types';
 import { BackgroundMessageType, OffscreenMessageType } from '../constants';
 import {
   getStateFromLocalStorage,
@@ -45,7 +45,7 @@ export const eventListener = async (
         const isRecordingInProgress = state.isRecordingInProgress;
 
         if (currentRecording && isRecordingInProgress) {
-          currentRecording.data.stopTime = Date.now();
+          currentRecording.stopTime = Date.now();
 
           await setStateToLocalStorage({
             isRecordingInProgress: false,
@@ -79,11 +79,23 @@ export const eventListener = async (
         await setStateToLocalStorage({
           recording: {
             id: v4(),
-            data: {
-              startTime: Date.now(),
-            },
+            startTime: Date.now(),
+            events: [],
           },
         });
+
+        break;
+      }
+      case BackgroundMessageType.USER_ACTION_HAPPENED: {
+        const state = await getStateFromLocalStorage();
+        const recording = state.recording;
+        const isRecordingInProgress = state.isRecordingInProgress;
+
+        if (recording && isRecordingInProgress) {
+          recording?.events.push((message?.data as { userEvent: UserEvent }).userEvent);
+
+          await setStateToLocalStorage({ recording });
+        }
 
         break;
       }

@@ -15,5 +15,9 @@
   "web_accessible_resources": [{
     "resources": ["src/background/offscreen.html", "src/background/offscreen.ts"],
     "matches": ["<all_urls>"]
+  }],
+  "content_scripts": [{
+    "js": ["content/content-script.js"],
+    "matches": ["<all_urls>"]
   }]
  }
