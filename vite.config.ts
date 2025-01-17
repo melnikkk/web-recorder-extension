@@ -1,14 +1,25 @@
 import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react-swc';
+import { resolve } from 'path';
+import react from '@vitejs/plugin-react';
 
-// https://vite.dev/config/
+const outDir = resolve(__dirname, 'dist');
+
+// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
   build: {
+    outDir,
     rollupOptions: {
       input: {
-        index: 'index.html',
-        offscreen: 'src/offscreen.html',
+        popup: resolve(__dirname, 'index.html'),
+        background: resolve(__dirname, 'src/background/index.ts'),
+        offscreen: resolve(__dirname, 'src/offscreen/index.ts'),
+        'offscreen-page': resolve(__dirname, 'src/offscreen.html'),
+      },
+      output: {
+        entryFileNames: '[name].js',
+        chunkFileNames: '[name].js',
+        assetFileNames: '[name].[ext]',
       },
     },
   },
