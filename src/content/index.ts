@@ -10,6 +10,10 @@ export const clickRegister = async (event: MouseEvent): Promise<void> => {
     type: event.type,
     coordinates: [event.x, event.y],
     timestamp: Date.now(),
+    view: {
+      innerWidth: window.innerWidth,
+      innerHeight: window.innerHeight,
+    },
   };
 
   await sendRuntimeMessage({
@@ -21,4 +25,4 @@ export const clickRegister = async (event: MouseEvent): Promise<void> => {
   });
 };
 
-document.addEventListener('click', clickRegister);
+document.body.addEventListener('click', clickRegister);
