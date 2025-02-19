@@ -4,7 +4,7 @@ import { BackgroundMessageType } from '../constants';
 import { UserEvent } from '../types';
 import ContextType = chrome.runtime.ContextType;
 
-export const clickRegister = async (event: MouseEvent): Promise<void> => {
+const clickRegister = async (event: MouseEvent): Promise<void> => {
   const userEvent: UserEvent = {
     id: v4(),
     type: event.type,
@@ -16,13 +16,25 @@ export const clickRegister = async (event: MouseEvent): Promise<void> => {
     },
   };
 
-  await sendRuntimeMessage({
-    type: BackgroundMessageType.USER_ACTION_HAPPENED,
-    contextType: ContextType.BACKGROUND,
-    data: {
-      userEvent,
-    },
-  });
+  try {
+    await sendRuntimeMessage({
+      type: BackgroundMessageType.USER_ACTION_HAPPENED,
+      contextType: ContextType.BACKGROUND,
+      data: { userEvent },
+    });
+  } catch (error) {
+    console.error('Failed to register click event:', error);
+  }
 };
 
-document.body.addEventListener('click', clickRegister);
+const initializeEventListeners = () => {
+  if (document.body) {
+    document.body.addEventListener('click', clickRegister);
+  } else {
+    document.addEventListener('DOMContentLoaded', () => {
+      document.body.addEventListener('click', clickRegister);
+    });
+  }
+};
+
+initializeEventListeners();

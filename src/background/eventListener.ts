@@ -70,6 +70,8 @@ export const eventListener = async (
             await setStateToLocalStorage({ recording: currentRecording });
           }
 
+          console.log(state);
+
           await chrome.downloads.download({ url: downloadUrl, saveAs: true });
         }
 
