@@ -28,6 +28,10 @@ export interface UserEvent {
   type: string;
   coordinates: [number, number];
   timestamp: number;
+  view: {
+    innerWidth: number;
+    innerHeight: number;
+  }
 }
 
 export type UserEvents = Array<UserEvent>;
