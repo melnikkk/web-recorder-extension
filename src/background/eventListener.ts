@@ -51,8 +51,6 @@ export const eventListener = async (
             isRecordingInProgress: false,
             recording: currentRecording,
           });
-          
-          console.log(currentRecording)
         }
 
         break;
@@ -93,8 +91,6 @@ export const eventListener = async (
         const recording = state.recording;
         const isRecordingInProgress = state.isRecordingInProgress;
 
-        console.log(message?.data)
-       
         if (recording && isRecordingInProgress) {
           recording?.events.push((message?.data as { userEvent: UserEvent }).userEvent);
 
