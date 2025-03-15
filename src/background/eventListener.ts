@@ -58,19 +58,36 @@ export const eventListener = async (
       case BackgroundMessageType.CAPTURE_IS_READY: {
         // TODO: provide generic solution
         // @ts-ignore
-        const downloadUrl = message.data?.url;
+        const { url, type, uint8Array } = message.data;
 
-        if (downloadUrl) {
+        if (url) {
           const state = await getStateFromLocalStorage();
           const currentRecording = state.recording;
 
           if (currentRecording) {
-            currentRecording.url = downloadUrl;
+            currentRecording.url = url;
 
             await setStateToLocalStorage({ recording: currentRecording });
           }
 
-          await chrome.downloads.download({ url: downloadUrl, saveAs: true });
+          if (uint8Array && type) {
+            const restoredUint8Array = new Uint8Array(uint8Array);
+            const blob = new Blob([restoredUint8Array], { type });
+
+            const body = new FormData();
+            const recordingId = state.recording?.id ?? 'recording.webm';
+
+            body.append('file', blob, recordingId);
+            body.append('id', recordingId);
+
+            await fetch('http://localhost:8080/recordings', {
+              method: 'POST',
+              // @ts-ignore
+              body,
+            });
+          }
+
+          await chrome.downloads.download({ url, saveAs: true });
         }
 
         break;
