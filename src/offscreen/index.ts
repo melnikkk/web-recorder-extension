@@ -6,15 +6,19 @@ import ContextType = chrome.runtime.ContextType;
 let mediaStream: MediaStream;
 
 const onRecorderDataAvailable = async (event: BlobEvent) => {
-  const videoChunks = event.data;
-  const blob = new Blob([videoChunks], { type: 'video/webm;codecs=vp9' });
+  const blob = new Blob([event.data], { type: 'video/webm' });
   const url = URL.createObjectURL(blob);
+
+  const arrayBuffer = await blob.arrayBuffer();
+  const uint8Array = new Uint8Array(arrayBuffer);
 
   await sendRuntimeMessage({
     type: BackgroundMessageType.CAPTURE_IS_READY,
     contextType: ContextType.BACKGROUND,
     data: {
       url,
+      uint8Array: Array.from(uint8Array),
+      type: blob.type,
     },
   });
 };
