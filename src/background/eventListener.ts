@@ -7,11 +7,7 @@ import {
   setStateToLocalStorage,
 } from '../utils';
 
-export const eventListener = async (
-  message: BackgroundMessage,
-  _sender: chrome.runtime.MessageSender,
-  _senderResponse: (response?: unknown) => void,
-) => {
+export const eventListener = async (message: BackgroundMessage) => {
   if (message.contextType === chrome.runtime.ContextType.BACKGROUND) {
     switch (message.type) {
       case BackgroundMessageType.INITIATE_RECORDING: {
@@ -56,8 +52,7 @@ export const eventListener = async (
         break;
       }
       case BackgroundMessageType.CAPTURE_IS_READY: {
-        // TODO: provide generic solution
-        // @ts-ignore
+        // @ts-expect-error: provide generic solution
         const { url, type, uint8Array } = message.data;
 
         if (url) {
@@ -79,10 +74,10 @@ export const eventListener = async (
 
             body.append('file', blob, recordingId);
             body.append('id', recordingId);
+            body.append('events', JSON.stringify(currentRecording?.events ?? []));
 
             await fetch('http://localhost:8080/recordings', {
               method: 'POST',
-              // @ts-ignore
               body,
             });
           }
