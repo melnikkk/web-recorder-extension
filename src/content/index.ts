@@ -4,6 +4,8 @@ import { BackgroundMessageType } from '../constants';
 import { UserEvent } from '../types';
 import ContextType = chrome.runtime.ContextType;
 
+let port: chrome.runtime.Port;
+
 const clickRegister = async (event: MouseEvent): Promise<void> => {
   const userEvent: UserEvent = {
     id: v4(),
@@ -16,7 +18,12 @@ const clickRegister = async (event: MouseEvent): Promise<void> => {
     },
   };
 
-  try {
+  if (!port) {
+    console.error('Port not connected');
+    return;
+  }
+
+  try {;
     await sendRuntimeMessage({
       type: BackgroundMessageType.USER_ACTION_HAPPENED,
       contextType: ContextType.BACKGROUND,
@@ -28,6 +35,7 @@ const clickRegister = async (event: MouseEvent): Promise<void> => {
 };
 
 const initializeEventListeners = () => {
+  console.log('Initializing event listeners...');
   if (document.body) {
     document.body.addEventListener('click', clickRegister);
   } else {
@@ -36,5 +44,13 @@ const initializeEventListeners = () => {
     });
   }
 };
+
+port = chrome.runtime.connect();
+
+port.onDisconnect.addListener(() => {
+  document.removeEventListener('click', clickRegister, true);
+
+  port = chrome.runtime.connect();
+});
 
 initializeEventListeners();
