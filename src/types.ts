@@ -1,4 +1,4 @@
-import { BackgroundMessageType, OffscreenMessageType } from './constants';
+import { BackgroundMessageType, OffscreenMessageType, UserEventType } from './constants';
 
 export interface Message<T> {
   type: T;
@@ -23,15 +23,24 @@ export interface Recording {
   events: UserEvents;
 }
 
-export interface UserEvent {
-  id: string;
-  type: string;
-  coordinates: [number, number];
-  timestamp: number;
+export interface UserClickEventData {
+  coordinates: {
+    x: number;
+    y: number;
+  };
   view: {
     innerWidth: number;
     innerHeight: number;
-  }
+  };
+}
+
+export type UserEventData = UserClickEventData;
+
+export interface UserEvent {
+  id: string;
+  type: UserEventType;
+  data: UserEventData;
+  timestamp: number;
 }
 
 export type UserEvents = Array<UserEvent>;
