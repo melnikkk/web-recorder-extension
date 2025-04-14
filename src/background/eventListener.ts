@@ -74,15 +74,22 @@ export const eventListener = async (message: BackgroundMessage) => {
 
             body.append('file', blob, recordingId);
             body.append('id', recordingId);
-            body.append('events', JSON.stringify(currentRecording?.events ?? []));
 
             await fetch('http://localhost:8080/recordings', {
               method: 'POST',
               body,
             });
-          }
 
-          await chrome.downloads.download({ url, saveAs: true });
+            await fetch(`http://localhost:8080/recordings/${recordingId}/events`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                events: currentRecording?.events ?? [],
+              }),
+            });
+          }
         }
 
         break;

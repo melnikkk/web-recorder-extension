@@ -1,6 +1,6 @@
 import { v4 } from 'uuid';
 import { sendRuntimeMessage } from '../utils';
-import { BackgroundMessageType } from '../constants';
+import { BackgroundMessageType, UserEventType } from '../constants';
 import { UserEvent } from '../types';
 import ContextType = chrome.runtime.ContextType;
 
@@ -9,28 +9,36 @@ let port: chrome.runtime.Port;
 const clickRegister = async (event: MouseEvent): Promise<void> => {
   const userEvent: UserEvent = {
     id: v4(),
-    type: event.type,
-    coordinates: [event.x, event.y],
-    timestamp: Date.now(),
-    view: {
-      innerWidth: window.innerWidth,
-      innerHeight: window.innerHeight,
+    // TODO: support other event types and data
+    type: UserEventType.CLICK,
+    data: {
+      coordinates: {
+        x: event.x,
+        y: event.y,
+      },
+      view: {
+        innerWidth: window.innerWidth,
+        innerHeight: window.innerHeight,
+      },
     },
+    timestamp: Date.now(),
   };
+
+  console.log('userEvent', userEvent);
 
   if (!port) {
     console.error('Port not connected');
     return;
   }
 
-  try {;
+  try {
     await sendRuntimeMessage({
       type: BackgroundMessageType.USER_ACTION_HAPPENED,
       contextType: ContextType.BACKGROUND,
       data: { userEvent },
     });
   } catch (error) {
-    console.error('Failed to register click event:', error);
+    console.error('Failed to register an event:', error);
   }
 };
 
