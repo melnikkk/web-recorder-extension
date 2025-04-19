@@ -18,8 +18,8 @@ export interface LocalStorageState {
 export interface Recording {
   id: string;
   url?: string;
-  startTime?: number;
-  stopTime?: number;
+  startTime: number;
+  stopTime: number | null;
   events: UserEvents;
 }
 
