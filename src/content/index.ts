@@ -17,14 +17,12 @@ const clickRegister = async (event: MouseEvent): Promise<void> => {
         y: event.y,
       },
       view: {
-        innerWidth: window.innerWidth,
-        innerHeight: window.innerHeight,
+        innerWidth: window.outerWidth,
+        innerHeight: window.outerHeight,
       },
     },
     timestamp: Date.now(),
   };
-
-  console.log('userEvent', userEvent);
 
   if (!port) {
     console.error('Port not connected');
@@ -43,7 +41,6 @@ const clickRegister = async (event: MouseEvent): Promise<void> => {
 };
 
 const initializeEventListeners = () => {
-  console.log('Initializing event listeners...');
   if (document.body) {
     document.body.addEventListener('click', clickRegister);
   } else {

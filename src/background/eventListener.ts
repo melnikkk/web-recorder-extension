@@ -37,6 +37,7 @@ export const eventListener = async (message: BackgroundMessage) => {
       }
       case BackgroundMessageType.STOP_RECORDING: {
         const state = await getStateFromLocalStorage();
+        
         const currentRecording = state.recording;
         const isRecordingInProgress = state.isRecordingInProgress;
 
@@ -71,9 +72,11 @@ export const eventListener = async (message: BackgroundMessage) => {
 
             const body = new FormData();
             const recordingId = state.recording?.id ?? 'recording.webm';
+            const data = JSON.stringify({ startTime: currentRecording?.startTime, stopTime: currentRecording?.stopTime });
 
             body.append('file', blob, recordingId);
             body.append('id', recordingId);
+            body.append('data', data);
 
             await fetch('http://localhost:8080/recordings', {
               method: 'POST',
@@ -99,6 +102,7 @@ export const eventListener = async (message: BackgroundMessage) => {
           recording: {
             id: v4(),
             startTime: Date.now(),
+            stopTime: null,
             events: [],
           },
         });
