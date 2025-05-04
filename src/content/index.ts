@@ -1,15 +1,37 @@
 import { v4 } from 'uuid';
-import { sendRuntimeMessage } from '../utils';
 import { BackgroundMessageType, UserEventType } from '../constants';
 import { UserEvent } from '../types';
 import ContextType = chrome.runtime.ContextType;
 
-let port: chrome.runtime.Port;
+const sendMessage = async (message: any): Promise<void> => {
+  if (!chrome.runtime) {
+    console.error('Chrome runtime not available');
 
-const clickRegister = async (event: MouseEvent): Promise<void> => {
+    return;
+  }
+
+  return new Promise((resolve) => {
+    try {
+      chrome.runtime.sendMessage(message, () => {
+        const error = chrome.runtime.lastError;
+
+        if (error) {
+          console.debug('Message sent without response:', error.message);
+        }
+
+        resolve();
+      });
+    } catch (err) {
+      console.error('Failed to send message:', err);
+
+      resolve();
+    }
+  });
+};
+
+const handleClick = async (event: MouseEvent): Promise<void> => {
   const userEvent: UserEvent = {
     id: v4(),
-    // TODO: support other event types and data
     type: UserEventType.CLICK,
     data: {
       coordinates: {
@@ -17,45 +39,32 @@ const clickRegister = async (event: MouseEvent): Promise<void> => {
         y: event.y,
       },
       view: {
-        innerWidth: window.outerWidth,
-        innerHeight: window.outerHeight,
+        innerWidth: window.innerWidth,
+        innerHeight: window.innerHeight,
       },
     },
     timestamp: Date.now(),
   };
 
-  if (!port) {
-    console.error('Port not connected');
-    return;
-  }
-
-  try {
-    await sendRuntimeMessage({
-      type: BackgroundMessageType.USER_ACTION_HAPPENED,
-      contextType: ContextType.BACKGROUND,
-      data: { userEvent },
-    });
-  } catch (error) {
-    console.error('Failed to register an event:', error);
-  }
+  await sendMessage({
+    type: BackgroundMessageType.USER_ACTION_HAPPENED,
+    contextType: ContextType.BACKGROUND,
+    data: { userEvent },
+  });
 };
 
-const initializeEventListeners = () => {
+const initializeEventListeners = (): void => {
+  document.removeEventListener('click', handleClick);
+
   if (document.body) {
-    document.body.addEventListener('click', clickRegister);
+    document.body.addEventListener('click', handleClick);
   } else {
     document.addEventListener('DOMContentLoaded', () => {
-      document.body.addEventListener('click', clickRegister);
+      document.body.addEventListener('click', handleClick);
     });
   }
 };
 
-port = chrome.runtime.connect();
-
-port.onDisconnect.addListener(() => {
-  document.removeEventListener('click', clickRegister, true);
-
-  port = chrome.runtime.connect();
-});
-
-initializeEventListeners();
+(function init() {
+  initializeEventListeners();
+})();
