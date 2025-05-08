@@ -20,7 +20,7 @@ export interface Recording {
   url?: string;
   startTime: number;
   stopTime: number | null;
-  events: UserEvents;
+  events: UserEventsRecord;
 }
 
 export interface UserClickEventData {
@@ -41,6 +41,7 @@ export interface UserEvent {
   type: UserEventType;
   data: UserEventData;
   timestamp: number;
+  index: number;
 }
 
-export type UserEvents = Array<UserEvent>;
+export type UserEventsRecord = Record<string, UserEvent>;

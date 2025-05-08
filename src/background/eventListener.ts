@@ -37,7 +37,7 @@ export const eventListener = async (message: BackgroundMessage) => {
       }
       case BackgroundMessageType.STOP_RECORDING: {
         const state = await getStateFromLocalStorage();
-        
+
         const currentRecording = state.recording;
         const isRecordingInProgress = state.isRecordingInProgress;
 
@@ -72,7 +72,10 @@ export const eventListener = async (message: BackgroundMessage) => {
 
             const body = new FormData();
             const recordingId = state.recording?.id ?? 'recording.webm';
-            const data = JSON.stringify({ startTime: currentRecording?.startTime, stopTime: currentRecording?.stopTime });
+            const data = JSON.stringify({
+              startTime: currentRecording?.startTime,
+              stopTime: currentRecording?.stopTime,
+            });
 
             body.append('file', blob, recordingId);
             body.append('id', recordingId);
@@ -89,7 +92,7 @@ export const eventListener = async (message: BackgroundMessage) => {
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                events: currentRecording?.events ?? [],
+                events: currentRecording?.events ?? {},
               }),
             });
           }
@@ -103,7 +106,7 @@ export const eventListener = async (message: BackgroundMessage) => {
             id: v4(),
             startTime: Date.now(),
             stopTime: null,
-            events: [],
+            events: {},
           },
         });
 
@@ -115,7 +118,10 @@ export const eventListener = async (message: BackgroundMessage) => {
         const isRecordingInProgress = state.isRecordingInProgress;
 
         if (recording && isRecordingInProgress) {
-          recording?.events.push((message?.data as { userEvent: UserEvent }).userEvent);
+          const userEvent = (message?.data as { userEvent: UserEvent }).userEvent;
+
+          userEvent.index = Object.keys(recording.events).length;
+          recording.events[userEvent.id] = userEvent;
 
           await setStateToLocalStorage({ recording });
         }
