@@ -64,37 +64,35 @@ export const eventListener = async (message: BackgroundMessage) => {
             currentRecording.url = url;
 
             await setStateToLocalStorage({ recording: currentRecording });
-          }
 
-          if (uint8Array && type) {
-            const restoredUint8Array = new Uint8Array(uint8Array);
-            const blob = new Blob([restoredUint8Array], { type });
+            if (uint8Array && type) {
+              const restoredUint8Array = new Uint8Array(uint8Array);
+              const blob = new Blob([restoredUint8Array], { type });
 
-            const body = new FormData();
-            const recordingId = state.recording?.id ?? 'recording.webm';
-            const data = JSON.stringify({
-              startTime: currentRecording?.startTime,
-              stopTime: currentRecording?.stopTime,
-            });
+              const body = new FormData();
+              const recordingId = state.recording?.id ?? 'recording.webm';
+              const data = JSON.stringify({
+                startTime: currentRecording?.startTime,
+                stopTime: currentRecording?.stopTime,
+              });
 
-            body.append('file', blob, recordingId);
-            body.append('id', recordingId);
-            body.append('data', data);
+              body.append('file', blob, recordingId);
+              body.append('id', recordingId);
+              body.append('data', data);
 
-            await fetch('http://localhost:8080/recordings', {
-              method: 'POST',
-              body,
-            });
+              await fetch('http://localhost:8080/recordings', {
+                method: 'POST',
+                body,
+              });
 
-            await fetch(`http://localhost:8080/recordings/${recordingId}/events`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                events: currentRecording?.events ?? {},
-              }),
-            });
+              await fetch(`http://localhost:8080/recordings/${recordingId}/events`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(currentRecording.events),
+              });
+            }
           }
         }
 
