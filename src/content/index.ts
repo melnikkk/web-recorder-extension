@@ -44,6 +44,7 @@ const handleClick = async (event: MouseEvent): Promise<void> => {
       },
     },
     timestamp: Date.now(),
+    index: 0,
   };
 
   await sendMessage({
