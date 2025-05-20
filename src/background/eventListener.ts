@@ -90,7 +90,7 @@ export const eventListener = async (message: BackgroundMessage) => {
                 headers: {
                   'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(currentRecording.events),
+                body: JSON.stringify({ events: currentRecording.events }),
               });
             }
           }
