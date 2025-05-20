@@ -37,10 +37,8 @@ const onRecorderStop = async () => {
 const onStartRecordingEventHandler = async () => {
   try {
     mediaStream = await navigator.mediaDevices.getDisplayMedia({
-      video: { width: { ideal: 1920, max: 1920 }, height: { ideal: 1080, max: 1080 } },
+      video: { width: { ideal: 1920, max: 1920 }, height: { ideal: 1080, max: 1080 }, displaySurface: 'window' },
       audio: false,
-      // @ts-expect-error: not typed
-      selfBrowserSurface: 'include',
     });
 
     const recorder = new MediaRecorder(mediaStream);
