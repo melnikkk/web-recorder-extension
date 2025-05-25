@@ -2,6 +2,7 @@ import { v4 } from 'uuid';
 import { BackgroundMessage, UserEvent } from '../types';
 import { BackgroundMessageType, OffscreenMessageType } from '../constants';
 import {
+  getActiveTab,
   getStateFromLocalStorage,
   sendRuntimeMessage,
   setStateToLocalStorage,
@@ -72,8 +73,9 @@ export const eventListener = async (message: BackgroundMessage) => {
               const body = new FormData();
               const recordingId = state.recording?.id ?? 'recording.webm';
               const data = JSON.stringify({
-                startTime: currentRecording?.startTime,
+                startTime: currentRecording.startTime,
                 stopTime: currentRecording?.stopTime,
+                viewData: currentRecording.viewData,
               });
 
               body.append('file', blob, recordingId);
@@ -99,12 +101,35 @@ export const eventListener = async (message: BackgroundMessage) => {
         break;
       }
       case BackgroundMessageType.RECORDING_IN_PROGRESS: {
+        const activeTab = await getActiveTab();
+
+        let viewData = { width: 1920, height: 1080 };
+        
+        if (activeTab.id) {
+          try {
+            const result = await chrome.scripting.executeScript({
+              target: { tabId: activeTab.id },
+              func: () => ({
+                width: window.innerWidth,
+                height: window.innerHeight
+              })
+            });
+            
+            if (result && result[0]?.result) {
+              viewData = result[0].result;
+            }
+          } catch (error) {
+            console.error('Failed to get view size data:', error);
+          }
+        }
+
         await setStateToLocalStorage({
           recording: {
             id: v4(),
             startTime: Date.now(),
             stopTime: null,
             events: {},
+            viewData,
           },
         });
 

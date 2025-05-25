@@ -21,6 +21,10 @@ export interface Recording {
   startTime: number;
   stopTime: number | null;
   events: UserEventsRecord;
+  viewData: {
+    width: number;
+    height: number;
+  };
 }
 
 export interface UserClickEventData {
