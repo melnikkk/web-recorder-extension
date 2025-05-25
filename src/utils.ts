@@ -13,3 +13,13 @@ export const setStateToLocalStorage = async (items: Partial<LocalStorageState>) 
 export const getStateFromLocalStorage = async (): Promise<LocalStorageState> => {
   return await chrome.storage.local.get<LocalStorageState>();
 };
+
+export const getActiveTab = async () => {
+  const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+  
+  if (tabs.length === 0) {
+    throw new Error('No active tab found');
+  }
+
+  return tabs[0];
+}

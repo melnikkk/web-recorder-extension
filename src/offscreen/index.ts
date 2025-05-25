@@ -42,6 +42,7 @@ const onStartRecordingEventHandler = async () => {
     });
 
     const recorder = new MediaRecorder(mediaStream);
+    
     recorder.ondataavailable = onRecorderDataAvailable;
     recorder.onstop = onRecorderStop;
 
@@ -49,7 +50,7 @@ const onStartRecordingEventHandler = async () => {
 
     await sendRuntimeMessage({
       type: BackgroundMessageType.RECORDING_IN_PROGRESS,
-      contextType: ContextType.BACKGROUND,
+      contextType: ContextType.BACKGROUND
     });
   } catch (error) {
     console.error(error);
