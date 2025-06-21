@@ -35,16 +35,8 @@ const handleClick = async (event: MouseEvent): Promise<void> => {
     type: UserEventType.CLICK,
     data: {
       coordinates: {
-        x: event.x,
-        y: event.y,
-        pageX: event.pageX,
-        pageY: event.pageY,
-      },
-      view: {
-        innerWidth: window.innerWidth,
-        innerHeight: window.innerHeight,
-        scrollX: window.scrollX,
-        scrollY: window.scrollY,
+        x: event.clientX,
+        y: event.clientY,
       },
     },
     timestamp: Date.now(),
