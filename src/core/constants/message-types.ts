@@ -8,8 +8,5 @@ export enum BackgroundMessageType {
 
 export enum OffscreenMessageType {
   START_RECORDING = 'start_recording',
-}
-
-export enum UserEventType {
-  CLICK = 'click',
+  STOP_RECORDING = 'stop_recording',
 }

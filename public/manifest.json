@@ -4,7 +4,14 @@
   "description": "Chrome based web video recorder.",
   "version": "1.0.0",
   "host_permissions": ["<all_urls>"],
-  "permissions": ["activeTab", "storage", "scripting", "tabCapture", "offscreen", "downloads"],
+  "permissions": [
+    "activeTab",
+    "storage",
+    "scripting",
+    "tabCapture",
+    "offscreen",
+    "downloads"
+  ],
   "background": {
     "service_worker": "background.js",
     "type": "module"
@@ -12,8 +19,17 @@
   "action": {
     "default_popup": "index.html"
   },
-  "content_scripts": [{
-    "js": ["content/content-script.js"],
-    "matches": ["<all_urls>"]
-  }]
- }
+  "content_scripts": [
+    {
+      "js": ["content/content-script.js"],
+      "matches": ["<all_urls>"],
+      "run_at": "document_start"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["offscreen.js", "src/offscreen.html"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
