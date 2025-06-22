@@ -5,7 +5,7 @@ export default defineConfig({
     emptyOutDir: false,
     rollupOptions: {
       input: {
-        'content-script': 'src/content/index.ts',
+        'content-script': 'src/entry-points/content/index.ts',
       },
       output: { entryFileNames: 'content/[name].js' },
     },
