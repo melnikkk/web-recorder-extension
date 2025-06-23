@@ -2,10 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import { GlobalStyle } from '../../ui/styles';
+import { ErrorBoundary, initPopupErrorHandler } from './popup-error-handler';
+
+initPopupErrorHandler();
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <GlobalStyle />
-    <App />
+    <ErrorBoundary>
+      <GlobalStyle />
+      <App />
+    </ErrorBoundary>
   </React.StrictMode>,
 );

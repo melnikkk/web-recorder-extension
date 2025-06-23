@@ -1,5 +1,8 @@
 import { OffscreenMessageType } from '../../core/constants';
 import { MediaCaptureService } from '../../features/recording';
+import { initOffscreenErrorHandler } from './offscreen-error-handler';
+
+initOffscreenErrorHandler();
 
 const mediaCaptureService = new MediaCaptureService();
 
