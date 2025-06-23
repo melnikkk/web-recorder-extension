@@ -1,7 +1,12 @@
 import { BackgroundMessageType } from '../../core/constants';
+import { ENV } from '../../core/config';
+import { ErrorHandlerService, NetworkError } from '../../core/error-handling';
 import { BackgroundMessage } from '../../core/types';
 import { RecorderService } from '../../features/recording';
 import { setStateToLocalStorage, Recording } from '../../features/storage';
+import { initBackgroundErrorHandler } from './background-error-handler';
+
+initBackgroundErrorHandler();
 
 const recorderService = RecorderService.getInstance();
 
@@ -68,12 +73,14 @@ chrome.runtime.onMessage.addListener(async (message: BackgroundMessage) => {
               body.append('data', data);
 
               try {
-                await fetch('http://localhost:8080/recordings', {
+                const apiBaseUrl = ENV.BE_URL;
+                
+                await fetch(`${apiBaseUrl}/recordings`, {
                   method: 'POST',
                   body,
                 });
 
-                await fetch(`http://localhost:8080/recordings/${recordingId}/events`, {
+                await fetch(`${apiBaseUrl}/recordings/${recordingId}/events`, {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
@@ -81,7 +88,15 @@ chrome.runtime.onMessage.addListener(async (message: BackgroundMessage) => {
                   body: JSON.stringify({ events: recording.events }),
                 });
               } catch (error) {
-                console.error('Error uploading to server:', error);
+                const networkError = new NetworkError(
+                  'Error uploading recording to server',
+                  error instanceof Error ? error : new Error(String(error)),
+                  `${ENV.BE_URL}/recordings`
+                );
+
+                ErrorHandlerService.getInstance().handleError(networkError, 'background');
+
+                throw networkError;
               }
             }
           }

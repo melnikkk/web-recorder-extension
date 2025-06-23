@@ -1,4 +1,5 @@
 import { BackgroundMessageType } from '../../../core/constants';
+import { MediaCaptureError } from '../../../core/error-handling';
 import { sendRuntimeMessage } from '../../../core/messaging';
 
 export class MediaCaptureService {
@@ -32,7 +33,12 @@ export class MediaCaptureService {
 
       this.mediaRecorder.start();
     } catch (error) {
-      console.error('Failed to start media capture:', error);
+      const mediaCaptureError = new MediaCaptureError(
+        'Failed to start media capture',
+        error instanceof Error ? error : new Error(String(error))
+      );
+      
+      throw mediaCaptureError;
     }
   }
 
