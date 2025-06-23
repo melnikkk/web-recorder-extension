@@ -1,5 +1,5 @@
-import { BackgroundMessageType, OffscreenMessageType } from '../constants';
-import { UserEvent } from '../../features/storage/types';
+import type { BackgroundMessageType, OffscreenMessageType } from '../constants';
+import type { UserEvent } from '../../features/storage/types';
 
 export interface Message<T, D = unknown> {
   type: T;

@@ -1,0 +1,59 @@
+{
+  "extensions": [".js", ".jsx", ".ts", ".tsx"],
+  "excludedFiles": ["node_modules/**", "dist/**", "build/**"],
+  "plugins": ["typescript", "react"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "error",
+    "style": "warn",
+    "pedantic": "warn"
+  },
+  "env": {
+    "browser": true,
+    "es2020": true,
+    "node": true
+  },
+  "globals": {
+    "chrome": "readonly",
+    "__dirname": "readonly",
+    "React": "readonly"
+  },
+  "rules": {
+    "no-debugger": "error",
+    "no-duplicate-case": "error",
+    "no-empty": "warn",
+    "no-extra-boolean-cast": "warn",
+    "no-fallthrough": "error",
+    "no-sparse-arrays": "error",
+    "no-unreachable": "error",
+    "no-unused-vars": "error",
+    "no-undef": "error",
+    "react/jsx-no-duplicate-props": "error",
+    "react/jsx-key": "error",
+    "react/jsx-no-undef": "error",
+    "react/jsx-uses-react": "error",
+    "react/jsx-uses-vars": "error",
+    "react/react-in-jsx-scope": "off",
+    "typescript/no-unnecessary-type-assertion": "warn",
+    "typescript/no-non-null-assertion": "warn",
+    "typescript/no-explicit-any": "warn",
+    "typescript/consistent-type-imports": "warn",
+    "typescript/no-unnecessary-type-constraint": "warn",
+    "typescript/consistent-indexed-object-style": "warn",
+    "prefer-const": "warn",
+    "no-var": "error",
+    "no-with": "error",
+    "yoda": "warn",
+
+    "max-lines-per-function": "off",
+    "max-depth": "off",
+    "max-classes-per-file": "off",
+    "max-nested-callbacks": "off",
+    "no-ternary": "off",
+    "sort-imports": "off",
+    "sort-keys": "off",
+    "no-magic-numbers": "off",
+    "react/no-set-state": "off",
+    "no-duplicate-imports": "off"
+  }
+}

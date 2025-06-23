@@ -6,6 +6,7 @@ import { ErrorBoundary, initPopupErrorHandler } from './popup-error-handler';
 
 initPopupErrorHandler();
 
+// oxlint-disable-next-line no-non-null-assertion
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ErrorBoundary>

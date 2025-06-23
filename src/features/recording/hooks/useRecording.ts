@@ -1,6 +1,6 @@
 import { useCallback, useState, useEffect } from 'react';
 import { RecorderService } from '../services';
-import { RecorderOptions } from '../types';
+import type { RecorderOptions } from '../types';
 import { getStateFromLocalStorage } from '../../storage';
 
 export const useRecording = () => {
@@ -45,9 +45,7 @@ export const useRecording = () => {
 
     loadState();
 
-    const storageListener = (changes: {
-      [key: string]: chrome.storage.StorageChange;
-    }) => {
+    const storageListener = (changes: Record<string, chrome.storage.StorageChange>) => {
       if (changes.isRecordingInProgress) {
         setIsRecordingInProgress(changes.isRecordingInProgress.newValue || false);
       }

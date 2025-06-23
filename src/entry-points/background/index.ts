@@ -1,9 +1,10 @@
 import { BackgroundMessageType } from '../../core/constants';
 import { ENV } from '../../core/config';
 import { ErrorHandlerService, NetworkError } from '../../core/error-handling';
-import { BackgroundMessage } from '../../core/types';
+import type { BackgroundMessage } from '../../core/types';
 import { RecorderService } from '../../features/recording';
-import { setStateToLocalStorage, Recording } from '../../features/storage';
+import type { Recording } from '../../features/storage';
+import { setStateToLocalStorage } from '../../features/storage';
 import { initBackgroundErrorHandler } from './background-error-handler';
 
 initBackgroundErrorHandler();
@@ -74,7 +75,7 @@ chrome.runtime.onMessage.addListener(async (message: BackgroundMessage) => {
 
               try {
                 const apiBaseUrl = ENV.BE_URL;
-                
+
                 await fetch(`${apiBaseUrl}/recordings`, {
                   method: 'POST',
                   body,
@@ -91,7 +92,7 @@ chrome.runtime.onMessage.addListener(async (message: BackgroundMessage) => {
                 const networkError = new NetworkError(
                   'Error uploading recording to server',
                   error instanceof Error ? error : new Error(String(error)),
-                  `${ENV.BE_URL}/recordings`
+                  `${ENV.BE_URL}/recordings`,
                 );
 
                 ErrorHandlerService.getInstance().handleError(networkError, 'background');

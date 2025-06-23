@@ -6,9 +6,12 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build && vite build --config vite.content.config.ts",
-    "lint": "eslint web-recorder-extension",
+    "lint:oxc": "oxlint",
+    "lint:types": "tsc --noEmit",
+    "lint": "npm run lint:types && npm run lint:oxc",
     "preview": "vite preview",
-    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json}\" --ignore-path .prettierignore"
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json}\" --ignore-path .prettierignore",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^4.3.4",
@@ -29,6 +32,9 @@
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.14",
     "globals": "^15.11.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.2",
+    "oxlint": "^1.3.0",
     "prettier": "^3.3.3",
     "typescript": "~5.6.2",
     "typescript-eslint": "^8.11.0",

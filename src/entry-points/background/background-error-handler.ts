@@ -7,7 +7,8 @@ self.addEventListener('error', (event) => {
 });
 
 self.addEventListener('unhandledrejection', (event) => {
-  const error = event.reason instanceof Error ? event.reason : new Error(String(event.reason));
+  const error =
+    event.reason instanceof Error ? event.reason : new Error(String(event.reason));
   ErrorHandlerService.getInstance().handleError(error, 'background-unhandled-promise');
 });
 

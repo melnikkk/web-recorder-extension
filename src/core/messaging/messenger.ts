@@ -1,5 +1,5 @@
 import { MessagingError } from '../error-handling';
-import { BackgroundMessage, OffscreenMessage } from '../types';
+import type { BackgroundMessage, OffscreenMessage } from '../types';
 
 export const sendRuntimeMessage = async (
   message: OffscreenMessage | BackgroundMessage,

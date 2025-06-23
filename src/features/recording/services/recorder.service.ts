@@ -2,12 +2,9 @@ import { v4 } from 'uuid';
 import { OffscreenMessageType } from '../../../core/constants';
 import { sendRuntimeMessage } from '../../../core/messaging';
 import { getActiveTabDimensions } from '../../../core/utils/chrome.utils';
-import {
-  getStateFromLocalStorage,
-  setStateToLocalStorage,
-  Recording,
-} from '../../storage';
-import { RecorderOptions } from '../types';
+import type { Recording } from '../../storage';
+import { getStateFromLocalStorage, setStateToLocalStorage } from '../../storage';
+import type { RecorderOptions } from '../types';
 
 export class RecorderService {
   private static instance: RecorderService;
