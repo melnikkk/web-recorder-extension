@@ -1,4 +1,4 @@
-import { EventTracker } from '../types';
+import type { EventTracker } from '../types';
 
 class TrackerRegistry {
   private trackers = new Map<string, EventTracker>();

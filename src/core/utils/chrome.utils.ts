@@ -54,7 +54,7 @@ export const getActiveTabDimensions = async (): Promise<{
       error instanceof Error ? error : new Error(String(error)),
       'getActiveTabDimensions',
     );
-    
+
     return defaultDimensions;
   }
 };

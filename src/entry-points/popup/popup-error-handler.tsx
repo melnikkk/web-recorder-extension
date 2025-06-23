@@ -1,4 +1,5 @@
-import { Component, ErrorInfo, ReactNode } from 'react';
+import type { ErrorInfo, ReactNode } from 'react';
+import { Component } from 'react';
 import { ErrorHandlerService } from '../../core/error-handling';
 
 interface ErrorBoundaryProps {
@@ -31,14 +32,16 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
   render() {
     if (this.state.hasError) {
-      return this.props.fallback || (
-        <div className="error-boundary">
-          <h2>Something went wrong</h2>
-          <p>{this.state.error?.message || 'Unknown error'}</p>
-          <button onClick={() => this.setState({ hasError: false, error: null })}>
-            Try Again
-          </button>
-        </div>
+      return (
+        this.props.fallback || (
+          <div className="error-boundary">
+            <h2>Something went wrong</h2>
+            <p>{this.state.error?.message || 'Unknown error'}</p>
+            <button onClick={() => this.setState({ hasError: false, error: null })}>
+              Try Again
+            </button>
+          </div>
+        )
       );
     }
 

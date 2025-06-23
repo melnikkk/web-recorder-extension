@@ -1,4 +1,4 @@
-import { UserEventType } from '../../../core/constants';
+import type { UserEventType } from '../../../core/constants';
 
 export interface UserClickEventData {
   coordinates: {

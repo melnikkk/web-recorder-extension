@@ -21,7 +21,6 @@ export class MediaCaptureService {
 
       this.mediaStream.getTracks().forEach((track) => {
         track.addEventListener('ended', () => {
-          console.log('Track ended - user stopped sharing');
           this.stopCapture();
         });
       });
@@ -35,9 +34,9 @@ export class MediaCaptureService {
     } catch (error) {
       const mediaCaptureError = new MediaCaptureError(
         'Failed to start media capture',
-        error instanceof Error ? error : new Error(String(error))
+        error instanceof Error ? error : new Error(String(error)),
       );
-      
+
       throw mediaCaptureError;
     }
   }
@@ -78,7 +77,6 @@ export class MediaCaptureService {
 
     if (this.mediaStream) {
       this.mediaStream.getTracks().forEach((track) => {
-        console.log(`MediaCaptureService: Stopping track: ${track.kind}`);
         track.stop();
       });
 

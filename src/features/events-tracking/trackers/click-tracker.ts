@@ -2,8 +2,8 @@ import { v4 } from 'uuid';
 import { BackgroundMessageType, UserEventType } from '../../../core/constants';
 import { MessagingError } from '../../../core/error-handling';
 import { sendRuntimeMessage } from '../../../core/messaging';
-import { EventTracker } from '../types';
-import { UserEvent } from '../../storage/types';
+import type { EventTracker } from '../types';
+import type { UserEvent } from '../../storage/types';
 
 export class ClickTracker implements EventTracker {
   type = UserEventType.CLICK;
