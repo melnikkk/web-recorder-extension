@@ -40,6 +40,7 @@
     "typescript/consistent-type-imports": "warn",
     "typescript/no-unnecessary-type-constraint": "warn",
     "typescript/consistent-indexed-object-style": "warn",
+    "typescript/array-type": ["warn", { "default": "generic" }],
     "prefer-const": "warn",
     "no-var": "error",
     "no-with": "error",
@@ -54,6 +55,7 @@
     "sort-keys": "off",
     "no-magic-numbers": "off",
     "react/no-set-state": "off",
-    "no-duplicate-imports": "off"
+    "no-duplicate-imports": "off",
+    "id-length": "off"
   }
 }

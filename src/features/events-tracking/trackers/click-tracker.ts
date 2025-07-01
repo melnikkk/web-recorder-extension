@@ -3,7 +3,7 @@ import { BackgroundMessageType, UserEventType } from '../../../core/constants';
 import { MessagingError } from '../../../core/error-handling';
 import { sendRuntimeMessage } from '../../../core/messaging';
 import type { EventTracker } from '../types';
-import type { UserEvent } from '../../storage/types';
+import type { UserEvent, UserInteraction, ParentElements } from '../../storage/types';
 
 export class ClickTracker implements EventTracker {
   type = UserEventType.CLICK;
@@ -17,6 +17,48 @@ export class ClickTracker implements EventTracker {
   }
 
   private handleClick = async (event: MouseEvent): Promise<void> => {
+    const targetElement = event.target as HTMLElement;
+
+    const pageInfo = {
+      url: window.location.href,
+      title: document.title,
+    };
+
+    const parentElements = this.getParentElements(targetElement, 5);
+
+    let userInteraction: UserInteraction = {
+      inputValue: 'clicked',
+    };
+
+    const additionalContext: Record<string, unknown> = {};
+
+    if (targetElement instanceof HTMLInputElement) {
+      userInteraction = {
+        ...userInteraction,
+        inputValue: targetElement.value,
+        isChecked:
+          targetElement.type === 'checkbox' || targetElement.type === 'radio'
+            ? targetElement.checked
+            : undefined,
+      };
+
+      additionalContext.inputType = targetElement.type;
+    } else if (targetElement instanceof HTMLSelectElement) {
+      const selectedOptions = Array.from(targetElement.selectedOptions).map(
+        (option) => option.value,
+      );
+
+      userInteraction = {
+        ...userInteraction,
+        selectedOptions,
+      };
+    } else if (targetElement instanceof HTMLTextAreaElement) {
+      userInteraction = {
+        ...userInteraction,
+        inputValue: targetElement.value,
+      };
+    }
+
     const userEvent: UserEvent = {
       id: v4(),
       type: UserEventType.CLICK,
@@ -25,9 +67,24 @@ export class ClickTracker implements EventTracker {
           x: event.clientX,
           y: event.clientY,
         },
+        targetElement: {
+          elementType: targetElement.tagName?.toLowerCase() || 'unknown',
+          elementId: targetElement.id || undefined,
+          elementName: (targetElement as HTMLInputElement).name || undefined,
+          elementClass: targetElement.className || undefined,
+          textContent: this.getTrimmedText(targetElement),
+          placeholder: (targetElement as HTMLInputElement).placeholder || undefined,
+          ariaLabel: targetElement.getAttribute('aria-label') || undefined,
+        },
+        pageContext: {
+          url: pageInfo?.url || '',
+          title: pageInfo?.title || '',
+          parentElements,
+        },
+        userInteraction,
+        additionalContext,
       },
       timestamp: Date.now(),
-      index: 0,
     };
 
     try {
@@ -46,4 +103,35 @@ export class ClickTracker implements EventTracker {
       throw messageError;
     }
   };
+
+  private getParentElements(element: HTMLElement, maxDepth: number): ParentElements {
+    const parents: ParentElements = [];
+    let currentElement = element.parentElement;
+    let depth = 0;
+
+    while (currentElement && depth < maxDepth) {
+      parents.push({
+        tagName: currentElement.tagName.toLowerCase(),
+        id: currentElement.id || undefined,
+        className: currentElement.className || undefined,
+      });
+
+      currentElement = currentElement.parentElement;
+      depth++;
+    }
+
+    return parents;
+  }
+
+  private getTrimmedText(element: HTMLElement): string | undefined {
+    const text = element.textContent;
+
+    if (!text) {
+      return undefined;
+    }
+
+    const trimmed = text.trim().replace(/\s+/g, ' ');
+
+    return trimmed.length > 100 ? trimmed.substring(0, 97) + '...' : trimmed;
+  }
 }
