@@ -9,7 +9,7 @@ export interface Message<T, D = unknown> {
 
 export interface CaptureReadyData {
   url: string;
-  uint8Array: number[];
+  uint8Array: Array<number>;
   type: string;
 }
 

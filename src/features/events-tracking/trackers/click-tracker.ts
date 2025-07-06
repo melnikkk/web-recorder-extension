@@ -1,9 +1,12 @@
 import { v4 } from 'uuid';
-import { BackgroundMessageType, UserEventType } from '../../../core/constants';
-import { MessagingError } from '../../../core/error-handling';
-import { sendRuntimeMessage } from '../../../core/messaging';
+import {
+  BackgroundMessageType,
+  MessagingError,
+  sendRuntimeMessage,
+  UserEventType,
+} from '../../../core';
 import type { EventTracker } from '../types';
-import type { UserEvent, UserInteraction, ParentElements } from '../../storage/types';
+import type { ParentElements, UserEvent, UserInteraction } from '../../storage';
 
 export class ClickTracker implements EventTracker {
   type = UserEventType.CLICK;
@@ -94,13 +97,11 @@ export class ClickTracker implements EventTracker {
         data: { userEvent },
       });
     } catch (error) {
-      const messageError = new MessagingError(
+      throw new MessagingError(
         'Failed to send user event',
         BackgroundMessageType.USER_ACTION_HAPPENED,
         error instanceof Error ? error : new Error(String(error)),
       );
-
-      throw messageError;
     }
   };
 
