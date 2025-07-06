@@ -1,24 +1,26 @@
 import { ChromeAPIError } from '../error-handling';
 
-export const ENV = {
+interface Config {
+  BE_URL: string;
+}
+
+const defaultConfig: Config = {
   BE_URL: import.meta.env.VITE_BE_URL || 'http://localhost:8080',
 };
 
 export class ConfigService {
   private static instance: ConfigService;
-  private config: Record<string, string> = {};
+  private config: Config = defaultConfig;
 
-  private constructor() {
-    this.config = {
-      BE_URL: ENV.BE_URL,
-    };
+  private constructor() {}
 
-    this.loadFromStorage();
-  }
-
-  public static getInstance(): ConfigService {
+  public static async getInstance(): Promise<ConfigService> {
     if (!ConfigService.instance) {
-      ConfigService.instance = new ConfigService();
+      const instance = new ConfigService();
+
+      await instance.loadFromStorage();
+
+      ConfigService.instance = instance;
     }
 
     return ConfigService.instance;
@@ -27,6 +29,7 @@ export class ConfigService {
   private async loadFromStorage(): Promise<void> {
     try {
       const data = await chrome.storage.local.get('config');
+
       if (data.config) {
         this.config = { ...this.config, ...data.config };
       }
@@ -41,16 +44,16 @@ export class ConfigService {
     }
   }
 
-  public get(key: string): string {
-    return this.config[key] || '';
+  public get current(): Config {
+    return this.config;
   }
 
-  public getBackendUrl(): string {
-    return this.get('BE_URL');
+  public get backendUrl(): string {
+    return this.config.BE_URL;
   }
 
-  public async set(key: string, value: string): Promise<void> {
-    this.config[key] = value;
+  public async set(newConfig: Partial<Config>): Promise<void> {
+    this.config = { ...this.config, ...newConfig };
 
     try {
       await chrome.storage.local.set({ config: this.config });

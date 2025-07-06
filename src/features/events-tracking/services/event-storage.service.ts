@@ -8,6 +8,7 @@ export class EventStorageService {
     if (!EventStorageService.instance) {
       EventStorageService.instance = new EventStorageService();
     }
+
     return EventStorageService.instance;
   }
 
