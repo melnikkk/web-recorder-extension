@@ -1,15 +1,12 @@
 import { v4 } from 'uuid';
-import {
-  BackgroundMessageType,
-  MessagingError,
-  sendRuntimeMessage,
-  UserEventType,
-} from '../../../core';
+import { UserEventType } from '../../../core';
 import type { EventTracker } from '../types';
 import type { ParentElements, UserEvent, UserInteraction } from '../../storage';
+import { EventStorageService } from '../services';
 
 export class ClickTracker implements EventTracker {
   type = UserEventType.CLICK;
+  private eventStorageService = EventStorageService.getInstance();
 
   initialize() {
     document.addEventListener('click', this.handleClick);
@@ -90,19 +87,7 @@ export class ClickTracker implements EventTracker {
       timestamp: Date.now(),
     };
 
-    try {
-      await sendRuntimeMessage({
-        type: BackgroundMessageType.USER_ACTION_HAPPENED,
-        contextType: chrome.runtime.ContextType.BACKGROUND,
-        data: { userEvent },
-      });
-    } catch (error) {
-      throw new MessagingError(
-        'Failed to send user event',
-        BackgroundMessageType.USER_ACTION_HAPPENED,
-        error instanceof Error ? error : new Error(String(error)),
-      );
-    }
+    await this.eventStorageService.storeEvent(userEvent);
   };
 
   private getParentElements(element: HTMLElement, maxDepth: number): ParentElements {

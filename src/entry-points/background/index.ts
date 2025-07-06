@@ -2,8 +2,8 @@ import type { BackgroundMessage } from '../../core';
 import {
   ErrorHandlerService,
   NetworkError,
-  ENV,
   BackgroundMessageType,
+  ConfigService,
 } from '../../core';
 import { RecorderService } from '../../features/recording';
 import type { Recording } from '../../features/storage';
@@ -87,9 +87,10 @@ chrome.runtime.onMessage.addListener(async (message: BackgroundMessage) => {
               body.append('id', recordingId);
               body.append('data', data);
 
-              try {
-                const apiBaseUrl = ENV.BE_URL;
+              const configService = await ConfigService.getInstance();
+              const apiBaseUrl = configService.backendUrl;
 
+              try {
                 await fetch(`${apiBaseUrl}/recordings`, {
                   method: 'POST',
                   body,
@@ -106,7 +107,7 @@ chrome.runtime.onMessage.addListener(async (message: BackgroundMessage) => {
                 const networkError = new NetworkError(
                   'Error uploading recording to server',
                   error instanceof Error ? error : new Error(String(error)),
-                  `${ENV.BE_URL}/recordings`,
+                  `${configService.backendUrl}/recordings`,
                 );
 
                 ErrorHandlerService.getInstance().handleError(networkError, 'background');
