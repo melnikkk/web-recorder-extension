@@ -1,5 +1,4 @@
-import { trackerRegistry } from '../../features/events-tracking/services';
-import { ClickTracker } from '../../features/events-tracking/trackers';
+import { ClickTracker, trackerRegistry } from '../../features/events-tracking';
 import { initContentErrorHandler } from './content-error-handler';
 
 initContentErrorHandler();

@@ -1,4 +1,4 @@
-import type { UserEventType } from '../../../core/constants';
+import type { UserEventType } from '../../../core';
 
 export interface TargetElement {
   elementType: string;
@@ -41,7 +41,11 @@ export interface UserClickEventData {
   additionalContext?: Record<string, unknown>;
 }
 
-export type UserEventData = UserClickEventData;
+export interface UserTabChangeEventData {
+  newUrl: string;
+}
+
+export type UserEventData = UserClickEventData | UserTabChangeEventData;
 
 export interface UserEvent {
   id: string;

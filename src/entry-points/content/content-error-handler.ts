@@ -1,4 +1,4 @@
-import { ErrorHandlerService } from '../../core/error-handling';
+import { ErrorHandlerService } from '../../core';
 
 export const initContentErrorHandler = () => {
   ErrorHandlerService.getInstance().registerGlobalErrorHandler();

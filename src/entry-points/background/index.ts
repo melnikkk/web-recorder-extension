@@ -1,13 +1,27 @@
-import { BackgroundMessageType } from '../../core/constants';
-import { ENV } from '../../core/config';
-import { ErrorHandlerService, NetworkError } from '../../core/error-handling';
-import type { BackgroundMessage } from '../../core/types';
+import type { BackgroundMessage } from '../../core';
+import {
+  ErrorHandlerService,
+  NetworkError,
+  ENV,
+  BackgroundMessageType,
+} from '../../core';
 import { RecorderService } from '../../features/recording';
 import type { Recording } from '../../features/storage';
 import { setStateToLocalStorage } from '../../features/storage';
 import { initBackgroundErrorHandler } from './background-error-handler';
+import { trackerRegistry, TabChangeTracker } from '../../features/events-tracking';
 
 initBackgroundErrorHandler();
+
+const tabChangeTracker = new TabChangeTracker();
+
+trackerRegistry.register(tabChangeTracker);
+
+trackerRegistry.initialize();
+
+self.addEventListener('unload', () => {
+  trackerRegistry.destroy();
+});
 
 const recorderService = RecorderService.getInstance();
 
@@ -28,9 +42,9 @@ chrome.runtime.onMessage.addListener(async (message: BackgroundMessage) => {
           const recording = state.recording as Recording;
 
           if (recording.stopTime === null) {
-            const stopTime = message.data?.stopTime ? message.data.stopTime : Date.now();
-
-            recording.stopTime = stopTime;
+            recording.stopTime = message.data?.stopTime
+              ? message.data.stopTime
+              : Date.now();
 
             await setStateToLocalStorage({ recording });
           }
@@ -102,33 +116,6 @@ chrome.runtime.onMessage.addListener(async (message: BackgroundMessage) => {
             }
           }
         }
-        break;
-      }
-      case BackgroundMessageType.USER_ACTION_HAPPENED: {
-        if (message.data && 'userEvent' in message.data) {
-          const state = await chrome.storage.local.get();
-
-          if (state.recording && state.isRecordingInProgress) {
-            const recording = state.recording as Recording;
-            const userEvent = message.data.userEvent;
-
-            if (!recording.events) {
-              recording.events = {};
-            }
-
-            recording.events[userEvent.id] = userEvent;
-
-            await setStateToLocalStorage({ recording });
-          } else {
-            console.warn(
-              'Recording state not ready for event tracking:',
-              state.isRecordingInProgress
-                ? 'Recording in progress but no recording object'
-                : 'Not recording',
-            );
-          }
-        }
-
         break;
       }
     }
