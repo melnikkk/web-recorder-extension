@@ -43,15 +43,17 @@ export interface UserClickEventData {
 
 export interface UserTabChangeEventData {
   newUrl: string;
+  previousUrl: string | null;
 }
 
 export type UserEventData = UserClickEventData | UserTabChangeEventData;
 
 export interface UserEvent {
   id: string;
+  title?: string;
+  timestamp: number;
   type: UserEventType;
   data: UserEventData;
-  timestamp: number;
 }
 
 export type UserEventsRecord = Record<string, UserEvent>;
