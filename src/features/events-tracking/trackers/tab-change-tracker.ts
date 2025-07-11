@@ -7,8 +7,8 @@ import { EventStorageService } from '../services';
 export class TabChangeTracker implements EventTracker {
   type = UserEventType.URL_CHANGE;
 
-  private tabUrls = new Map<number, string>();
   private eventStorageService = EventStorageService.getInstance();
+  private currentURL: string | null = null;
 
   initialize() {
     chrome.tabs.onActivated.addListener(this.onTabActivated);
@@ -20,24 +20,33 @@ export class TabChangeTracker implements EventTracker {
     chrome.tabs.onUpdated.removeListener(this.onTabUpdated);
   }
 
+  private generateUrlChangeRecordingEventTitle(newUrl: string): string {
+    const url = new URL(newUrl);
+    const domain = url.hostname.replace('www.', '');
+
+    return `Navigate to ${domain}`;
+  }
+
   private onTabUpdated = async (
-    tabId: number,
+    _tabId: number,
     changeInfo: chrome.tabs.TabChangeInfo,
     tab: chrome.tabs.Tab,
   ) => {
-    if (changeInfo.status === 'complete' && tab.url) {
-      this.tabUrls.set(tabId, tab.url);
-
+    if (tab.url && this.isDomainChange(tab.url) && changeInfo.status === 'complete') {
       const userEvent: UserEvent = {
         id: v4(),
         type: this.type,
+        title: this.generateUrlChangeRecordingEventTitle(tab.url),
         timestamp: Date.now(),
         data: {
           newUrl: tab.url,
+          previousUrl: this.currentURL,
         },
       };
 
       await this.eventStorageService.storeEvent(userEvent);
+
+      this.currentURL = tab.url;
     }
   };
 
@@ -48,21 +57,34 @@ export class TabChangeTracker implements EventTracker {
       const tab = await chrome.tabs.get(toTabId);
 
       if (tab.url) {
-        this.tabUrls.set(toTabId, tab.url);
-
         const urlChangeEvent: UserEvent = {
           id: v4(),
           type: UserEventType.URL_CHANGE,
+          title: this.generateUrlChangeRecordingEventTitle(tab.url),
           timestamp: Date.now(),
           data: {
             newUrl: tab.url,
+            previousUrl: this.currentURL,
           },
         };
 
         await this.eventStorageService.storeEvent(urlChangeEvent);
+
+        this.currentURL = tab.url;
       }
     } catch (error) {
       console.error('TabChangeTracker: Error getting tab information', error);
     }
   };
+
+  private isDomainChange(url: string): boolean {
+    if (!url) {
+      return false;
+    }
+
+    const currentDomain = this.currentURL ? new URL(this.currentURL).hostname : null;
+    const newDomain = new URL(url).hostname;
+
+    return currentDomain !== newDomain;
+  }
 }
