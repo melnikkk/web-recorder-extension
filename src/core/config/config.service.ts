@@ -1,4 +1,5 @@
 import { ChromeAPIError } from '../error-handling';
+import { getAuthToken } from '../../features/auth';
 
 interface Config {
   BE_URL: string;
@@ -50,6 +51,10 @@ export class ConfigService {
 
   public get backendUrl(): string {
     return this.config.BE_URL;
+  }
+
+  public async getAuthToken(): Promise<string | null> {
+    return await getAuthToken();
   }
 
   public async set(newConfig: Partial<Config>): Promise<void> {
