@@ -1,23 +1,18 @@
-import { useCallback } from 'react';
+import { SignIn, SignedIn, SignedOut } from '@clerk/chrome-extension';
 import { AppWrapper, RecorderContent } from '../../ui/styles';
-import { useRecording } from '../../features/recording';
-import { RecordingControls } from '../../features/recording/components';
+import { RecordingApp } from './components/Recorder';
 
 export default function App() {
-  const { isRecordingInProgress, toggleRecording } = useRecording();
-
-  const handleToggleRecording = useCallback(() => {
-    toggleRecording();
-  }, [toggleRecording]);
-
   return (
     <AppWrapper>
-      <RecorderContent>
-        <RecordingControls
-          isRecordingInProgress={isRecordingInProgress}
-          onToggleRecording={handleToggleRecording}
-        />
-      </RecorderContent>
+      <SignedIn>
+        <RecordingApp />
+      </SignedIn>
+      <SignedOut>
+        <RecorderContent>
+          <SignIn />
+        </RecorderContent>
+      </SignedOut>
     </AppWrapper>
   );
 }
