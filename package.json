@@ -12,7 +12,7 @@
     "lint": "npm run lint:types && npm run lint:oxc",
     "preview": "vite preview",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json}\" --ignore-path .prettierignore",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "dependencies": {
     "@clerk/chrome-extension": "^2.5.10",
@@ -24,6 +24,8 @@
     "vite-plugin-static-copy": "^2.2.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
     "@eslint/js": "^9.13.0",
     "@types/chrome": "^0.0.280",
     "@types/node": "^22.10.7",
