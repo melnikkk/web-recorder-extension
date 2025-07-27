@@ -1,8 +1,8 @@
 import { v4 } from 'uuid';
 import { UserEventType } from '../../../core';
-import type { EventTracker } from '../types';
 import type { UserEvent } from '../../storage';
 import { EventStorageService } from '../services';
+import type { EventTracker } from '../types';
 
 export class TabChangeTracker implements EventTracker {
   type = UserEventType.URL_CHANGE;
@@ -56,7 +56,7 @@ export class TabChangeTracker implements EventTracker {
     try {
       const tab = await chrome.tabs.get(toTabId);
 
-      if (tab.url) {
+      if (tab.url && this.isDomainChange(tab.url)) {
         const urlChangeEvent: UserEvent = {
           id: v4(),
           type: UserEventType.URL_CHANGE,
